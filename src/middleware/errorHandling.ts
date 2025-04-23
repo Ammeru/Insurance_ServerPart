@@ -1,5 +1,5 @@
 import ApiError from '../error/apiError';
-import { Request, Response, NextFunction} from "express";
+import { Request, Response, NextFunction} from 'express';
 
 const errorHandler = (err: unknown, req: Request,
                       res: Response, next: NextFunction): void => {

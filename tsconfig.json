@@ -7,7 +7,10 @@
     "outDir": "./dist",
     "strict": true,
     "noImplicitAny": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "typeRoots": [
+      "./node_modules/@types"
+    ]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]
