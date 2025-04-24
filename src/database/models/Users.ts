@@ -1,11 +1,17 @@
 import { Model, DataTypes, Sequelize } from '@sequelize/core';
 
+enum UserRole {
+    USER = "user",
+    ADMIN = "admin",
+}
+
 interface UserAttributes {
     id: number;
     email: string;
     password: string;
     firstName: string;
     lastName?: string;
+    role: UserRole;
 }
 
 type UserCreationAttributes = Omit<UserAttributes, 'id'>;
@@ -17,6 +23,7 @@ class Users extends Model<UserAttributes, UserCreationAttributes> implements Use
     public password!: string;
     public firstName!: string;
     public lastName?: string;
+    public role!: UserRole;
 }
 
 const initUserModel = (sequelize: Sequelize) => {
@@ -34,13 +41,18 @@ const initUserModel = (sequelize: Sequelize) => {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        username: {
+        firstName: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        fio: {
+        lastName: {
             type: DataTypes.STRING,
             allowNull: true,
+        },
+        role: {
+            type: DataTypes.ENUM(...Object.values(UserRole)),
+            allowNull: false,
+            defaultValue: UserRole.USER,
         },
     }, {
         sequelize,
@@ -50,4 +62,4 @@ const initUserModel = (sequelize: Sequelize) => {
     });
 };
 
-export { UserAttributes, UserCreationAttributes, UserUpdateAttributes, Users, initUserModel }
+export { UserAttributes, UserCreationAttributes, UserUpdateAttributes, Users, UserRole, initUserModel }
