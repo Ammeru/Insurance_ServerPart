@@ -1,4 +1,6 @@
 import dotenv from 'dotenv';
+dotenv.config();
+
 import express from 'express';
 import cors from 'cors';
 import fileUpload from 'express-fileupload';
@@ -6,8 +8,6 @@ import router from './routes';
 import errorHandler from './middleware/errorHandling';
 import path from 'path';
 import { connectDB } from './database/config/db'
-
-dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;

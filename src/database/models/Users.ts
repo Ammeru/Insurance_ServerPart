@@ -1,17 +1,23 @@
 import { Model, DataTypes, Sequelize } from '@sequelize/core';
 
 enum UserRole {
-    USER = "user",
-    ADMIN = "admin",
+    USER = "user", // Пользователь
+    ADMIN = "admin", // Администратор
+}
+
+enum ClientType {
+    PHYSICAL = "physical", // Физическое лицо
+    LEGAL = "legal", // Юридическое лицо
 }
 
 interface UserAttributes {
     id: number;
     email: string;
     password: string;
-    firstName: string;
-    lastName?: string;
     role: UserRole;
+    clientType: ClientType;
+    phone: string;
+    unp?: string | null;
 }
 
 type UserCreationAttributes = Omit<UserAttributes, 'id'>;
@@ -21,9 +27,10 @@ class Users extends Model<UserAttributes, UserCreationAttributes> implements Use
     public id!: number;
     public email!: string;
     public password!: string;
-    public firstName!: string;
-    public lastName?: string;
     public role!: UserRole;
+    public clientType!: ClientType;
+    public phone!: string;
+    public unp?: string | null;
 }
 
 const initUserModel = (sequelize: Sequelize) => {
@@ -41,19 +48,23 @@ const initUserModel = (sequelize: Sequelize) => {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        firstName: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        lastName: {
-            type: DataTypes.STRING,
-            allowNull: true,
-        },
         role: {
             type: DataTypes.ENUM(...Object.values(UserRole)),
             allowNull: false,
             defaultValue: UserRole.USER,
         },
+        clientType: {
+            type: DataTypes.ENUM(...Object.values(ClientType)),
+            allowNull: false,
+        },
+        phone: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        unp: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        }
     }, {
         sequelize,
         modelName: 'Users',
@@ -62,4 +73,4 @@ const initUserModel = (sequelize: Sequelize) => {
     });
 };
 
-export { UserAttributes, UserCreationAttributes, UserUpdateAttributes, Users, UserRole, initUserModel }
+export { UserAttributes, UserCreationAttributes, UserUpdateAttributes, Users, UserRole, ClientType, initUserModel }
