@@ -1,26 +1,57 @@
 import {ClientType, UserRole, Users} from '../database/models/Users';
+import { RegCodes} from "../database/models/RegistrationCodes";
 import ApiError from '../error/apiError';
 import bcrypt from 'bcrypt';
+import crypto from "crypto";
 import {NextFunction, Request, Response} from 'express';
 import {generateJwt} from '../middleware/utils';
+import {sendMail} from "../middleware/mailer";
 import {JwtPayload} from "../middleware/auth";
 import {Op} from "@sequelize/core";
 
 class UserController {
 
-    async registration(req: Request, res: Response, next: NextFunction) {
+    async sendCode(req: Request, res: Response, next: NextFunction) {
         try {
-            const { email, password, phone, unp } = req.body;
-            if (!email || !password) {
-                return next(ApiError.badRequest("Неверная почта и/или пароль"));
+            const { email } = req.body;
+            if (!email) {
+                return next(ApiError.badRequest("Не указана почта"));
             }
 
-            const clientType = unp ? ClientType.LEGAL : ClientType.INDIVIDUAL;
-            // Проверка есть ли в запросе inn, чтобы узнать кто регистрируется
+            const code = crypto.randomInt(100000, 999999).toString(); //Генерирует код из 6 символов
+            const expiresAt = new Date(Date.now() + 10 * 60 * 1000); //Код будет существовать примерно 10 минут
+
+            await RegCodes.upsert({email, code, expiresAt}); //Создание или обновление кода
+
+            await sendMail(email, "Код подтверждения", `Ваш код ${code}`); //Отправляем код
+
+            return res.json({message: "Код отправлен на почту!"});
+        } catch (error) {
+            console.error("Ошибка отправки кода:", error);
+            return next(ApiError.iternal("Ошибка отправки кода"));
+        }
+    }
+
+    async registration(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { email, password, code } = req.body;
+            if (!email || !password || !code) {
+                return next(ApiError.badRequest("Отсутствует почта и/или пароль/код"));
+            }
 
             const exist = await Users.findOne({ where: {email} });
             if (exist) {
                 return next(ApiError.badRequest("Пользователь с такой почтой уже существует"));
+            }
+
+            const regCode = await RegCodes.findOne({where: {email, code}});
+            if (!regCode) {
+                return next(ApiError.badRequest("Неверный код подтверждения"));
+            }
+
+            if (new Date(regCode.expiresAt) < new Date()) {
+                await regCode.destroy();
+                return next(ApiError.badRequest("Код подтверждения истёк"));
             }
 
             const hashPassword = await bcrypt.hash(password, 10);
@@ -28,9 +59,7 @@ class UserController {
             const user = await Users.create({
                email,
                password: hashPassword,
-               phone,
-               unp,
-               clientType,
+               clientType: ClientType.PHYSICAL,
                role: UserRole.USER
             });
             const token = generateJwt(user.id, user.email, user.role);
@@ -112,6 +141,21 @@ class UserController {
         } catch (error) {
             console.error("Ошибка выполнения:", error);
             return next(ApiError.iternal("Ошибка получения пользователя"));
+        }
+    }
+
+    async getMyProfile(req: Request, res: Response, next: NextFunction) {
+        try {
+            const userId = (req.user as JwtPayload).id;
+            const user = await Users.findByPk(userId);
+
+            if (!user) {
+                return next(ApiError.notFound("Пользователь не найден"));
+            }
+            return res.json(user);
+        } catch (error) {
+            console.error("Ошибка получения профиля:", error);
+            return next(ApiError.iternal("Ошибка получения профиля"));
         }
     }
 

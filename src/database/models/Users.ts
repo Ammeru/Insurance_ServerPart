@@ -16,7 +16,7 @@ interface UserAttributes {
     password: string;
     role: UserRole;
     clientType: ClientType;
-    phone: string;
+    phone?: string | null;
     unp?: string | null;
 }
 
@@ -29,7 +29,7 @@ class Users extends Model<UserAttributes, UserCreationAttributes> implements Use
     public password!: string;
     public role!: UserRole;
     public clientType!: ClientType;
-    public phone!: string;
+    public phone?: string | null;
     public unp?: string | null;
 }
 
@@ -56,10 +56,11 @@ const initUserModel = (sequelize: Sequelize) => {
         clientType: {
             type: DataTypes.ENUM(...Object.values(ClientType)),
             allowNull: false,
+            defaultValue: ClientType.PHYSICAL,
         },
         phone: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: true,
         },
         unp: {
             type: DataTypes.STRING,

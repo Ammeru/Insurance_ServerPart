@@ -32,3 +32,5 @@ function auth(req: Request, res: Response, next: NextFunction) {
 }
 
 export { auth, JwtPayload };
+
+//ПОЗЖЕ ПЕРЕНЕСТИ В utils
