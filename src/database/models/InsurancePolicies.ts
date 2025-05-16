@@ -28,14 +28,16 @@ interface InsuranceAttributes {
     endDate: Date;
     status: Status;
 
-    riskLevel: Risk;
-    riskReason: string;
+    riskLevel?: Risk | null;
+    riskReason?: string | null;
+
+    fromCity?: string | null;
+    toCity?: string | null;
 
     cost: number;
 }
 
 type InsuranceCreationAttributes = Omit<InsuranceAttributes, 'id'>;
-type InsuranceUpdateAttributes = Partial<InsuranceAttributes>;
 
 class InsurancePolicies extends Model<InsuranceAttributes, InsuranceCreationAttributes> implements InsuranceAttributes {
     public id!: number;
@@ -45,8 +47,11 @@ class InsurancePolicies extends Model<InsuranceAttributes, InsuranceCreationAttr
     public endDate!: Date;
     public status!: Status;
 
-    public riskLevel!: Risk;
-    public riskReason!: string;
+    public riskLevel?: Risk | null;
+    public riskReason?: string | null;
+
+    public fromCity?: string | null;
+    public toCity?: string | null;
 
     public cost!: number;
 }
@@ -81,12 +86,20 @@ const initInsuranceModel = (sequelize: Sequelize) => {
         },
         riskLevel: {
             type: DataTypes.ENUM(...Object.values(Risk)),
-            allowNull: false,
+            allowNull: true,
             defaultValue: Risk.LOW,
         },
         riskReason: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: true,
+        },
+        fromCity: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        toCity: {
+            type: DataTypes.STRING,
+            allowNull: true,
         },
         cost: {
             type: DataTypes.INTEGER,
@@ -101,5 +114,5 @@ const initInsuranceModel = (sequelize: Sequelize) => {
     });
 };
 
-export { InsuranceAttributes, InsuranceCreationAttributes, InsuranceUpdateAttributes, InsurancePolicies,
+export { InsuranceAttributes, InsuranceCreationAttributes, InsurancePolicies,
     InsuranceType, Status, Risk, initInsuranceModel }

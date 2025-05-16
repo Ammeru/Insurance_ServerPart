@@ -7,8 +7,8 @@ import {initInsuranceModel, InsurancePolicies} from "../models/InsurancePolicies
 const initModels = (sequelize: Sequelize) => {
     initUserModel(sequelize);
     initRegCodeModel(sequelize);
-    initCargoModel(sequelize);
     initInsuranceModel(sequelize);
+    initCargoModel(sequelize);
 
     InsurancePolicies.hasMany(Cargos, {foreignKey: 'insurance_id'});
     Cargos.belongsTo(InsurancePolicies, {foreignKey: 'insurance_id'});

@@ -21,7 +21,6 @@ interface UserAttributes {
 }
 
 type UserCreationAttributes = Omit<UserAttributes, 'id'>;
-type UserUpdateAttributes = Partial<UserAttributes>;
 
 class Users extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
     public id!: number;
@@ -74,4 +73,4 @@ const initUserModel = (sequelize: Sequelize) => {
     });
 };
 
-export { UserAttributes, UserCreationAttributes, UserUpdateAttributes, Users, UserRole, ClientType, initUserModel }
+export { UserAttributes, UserCreationAttributes, Users, UserRole, ClientType, initUserModel }
