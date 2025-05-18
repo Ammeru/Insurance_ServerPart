@@ -1,4 +1,5 @@
 import { Model, DataTypes, Sequelize } from '@sequelize/core';
+import {Risk} from "./InsurancePolicies";
 
 enum CargoType {
     GENERAL = "general", // Общий груз
@@ -11,26 +12,34 @@ enum CargoType {
 
 interface CargoAttributes {
     id: number;
-    insurance_id: number;
 
     cargoName: string; // Наименование груза
     cargoType: CargoType; // Тип груза
     cargoValue: number; // Стоимость груза
     cargoWeight: number; // Вес груза
-    cargoDescription: string; // Описание груза
+    fromCity: string;
+    toCity: string;
+    deliveryDate: Date;
+
+    riskLevel: string;
+    riskReason: string;
 }
 
 type CargoCreationAttributes = Omit<CargoAttributes, 'id'>;
 
 class Cargos extends Model<CargoAttributes, CargoCreationAttributes> implements CargoAttributes {
     public id!: number;
-    public insurance_id!: number;
 
     public cargoName!: string;
     public cargoType!: CargoType;
     public cargoValue!: number;
     public cargoWeight!: number;
-    public cargoDescription!: string;
+    public fromCity!: string;
+    public toCity!: string;
+    public deliveryDate!: Date;
+
+    public riskLevel!: Risk;
+    public riskReason!: string;
 }
 
 const initCargoModel = (sequelize: Sequelize) => {
@@ -40,10 +49,6 @@ const initCargoModel = (sequelize: Sequelize) => {
             autoIncrement: true,
             primaryKey: true,
         },
-        insurance_id: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-        },
         cargoName: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -51,6 +56,7 @@ const initCargoModel = (sequelize: Sequelize) => {
         cargoType: {
             type: DataTypes.ENUM(...Object.values(CargoType)),
             allowNull: false,
+            defaultValue: CargoType.GENERAL,
         },
         cargoValue: {
             type: DataTypes.INTEGER,
@@ -60,10 +66,27 @@ const initCargoModel = (sequelize: Sequelize) => {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-        cargoDescription: {
+        fromCity: {
             type: DataTypes.STRING,
             allowNull: false,
-        }
+        },
+        toCity: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        deliveryDate: {
+            type: DataTypes.DATE,
+            allowNull: false,
+        },
+        riskLevel: {
+            type: DataTypes.ENUM(...Object.values(Risk)),
+            allowNull: false,
+            defaultValue: Risk.LOW,
+        },
+        riskReason: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
     }, {
         sequelize,
         modelName: 'Cargos',
@@ -73,5 +96,4 @@ const initCargoModel = (sequelize: Sequelize) => {
     });
 };
 
-export { CargoAttributes, CargoCreationAttributes, Cargos,
-    CargoType, initCargoModel }
+export { Cargos, CargoType, initCargoModel }

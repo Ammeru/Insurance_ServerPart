@@ -2,6 +2,7 @@ import { Model, DataTypes, Sequelize } from '@sequelize/core';
 
 enum UserRole {
     USER = "user", // Пользователь
+    MANAGER = "manager", // Сотрудник
     ADMIN = "admin", // Администратор
 }
 
@@ -73,4 +74,4 @@ const initUserModel = (sequelize: Sequelize) => {
     });
 };
 
-export { UserAttributes, UserCreationAttributes, Users, UserRole, ClientType, initUserModel }
+export { Users, UserRole, ClientType, initUserModel }
