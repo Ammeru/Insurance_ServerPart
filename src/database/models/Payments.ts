@@ -1,6 +1,6 @@
 import { Model, DataTypes, Sequelize} from "@sequelize/core";
 
-enum Status {
+enum PaymentStatus {
     PENDING = 'pending',
     PAID = 'paid',
     REFUNDED = 'refunded',
@@ -10,7 +10,7 @@ interface PaymentAttributes {
     id: number;
     insuranceId: number;
     amount: number;
-    status: Status;
+    paymentStatus: PaymentStatus;
     paidAt?: Date | null;
 }
 
@@ -20,11 +20,11 @@ class Payments extends Model<PaymentAttributes, PaymentCreationAttributes> imple
     public id!: number;
     public insuranceId!: number;
     public amount!: number;
-    public status!: Status;
+    public paymentStatus!: PaymentStatus;
     public paidAt?: Date | null;
 }
 
-const initPayments = (sequelize: Sequelize) => {
+const initPaymentsModel = (sequelize: Sequelize) => {
     Payments.init({
         id: {
             type: DataTypes.INTEGER,
@@ -39,10 +39,10 @@ const initPayments = (sequelize: Sequelize) => {
             type: DataTypes.FLOAT,
             allowNull: false,
         },
-        status: {
-            type: DataTypes.ENUM(...Object.values(Status)),
+        paymentStatus: {
+            type: DataTypes.ENUM(...Object.values(PaymentStatus)),
             allowNull: false,
-            defaultValue: Status.PENDING,
+            defaultValue: PaymentStatus.PENDING,
         },
         paidAt: {
             type: DataTypes.DATE,
@@ -57,4 +57,4 @@ const initPayments = (sequelize: Sequelize) => {
     });
 };
 
-export { Payments, Status, initPayments };
+export { Payments, PaymentStatus, initPaymentsModel };

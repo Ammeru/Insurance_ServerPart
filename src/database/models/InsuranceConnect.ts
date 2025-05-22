@@ -1,25 +1,31 @@
 import { Model, DataTypes, Sequelize } from '@sequelize/core';
 
-interface InsuranceCargoAttributes {
+interface InsuranceAttributes {
     id: number;
+    riskId: number;
     cargoId: number;
     insuranceId: number;
 }
 
-type InsuranceCargoCreationAttributes = Omit<InsuranceCargoAttributes, 'id'>;
+type InsuranceCreationAttributes = Omit<InsuranceAttributes, 'id'>;
 
-class InsurancePolicyCargoConnect extends Model<InsuranceCargoAttributes, InsuranceCargoCreationAttributes> implements InsuranceCargoAttributes {
+class InsuranceConnect extends Model<InsuranceAttributes, InsuranceCreationAttributes> implements InsuranceAttributes {
     public id!: number;
+    public riskId!: number;
     public cargoId!: number;
     public insuranceId!: number;
 }
 
-const initInsurancePolicyCargoConnect = (sequelize: Sequelize) => {
-    InsurancePolicyCargoConnect.init({
+const initInsuranceConnectModel = (sequelize: Sequelize) => {
+    InsuranceConnect.init({
         id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true,
+        },
+        riskId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
         },
         cargoId: {
             type: DataTypes.INTEGER,
@@ -31,11 +37,11 @@ const initInsurancePolicyCargoConnect = (sequelize: Sequelize) => {
         },
     }, {
         sequelize,
-        modelName: 'InsurancePolicyCargoConnect',
-        tableName: 'insurancePolicyCargoConnect',
+        modelName: 'InsuranceConnect',
+        tableName: 'insuranceConnect',
         schema: 'insurance',
         timestamps: false,
     })
 };
 
-export { InsurancePolicyCargoConnect, initInsurancePolicyCargoConnect };
+export { InsuranceConnect, initInsuranceConnectModel };

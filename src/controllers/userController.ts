@@ -135,19 +135,21 @@ class UserController {
                 return next(ApiError.notFound("Пользователь не найден"));
             }
 
-            if (phone && !/^\+?\d{7,15}$/.test(phone)) {
-                return next(ApiError.badRequest("Некорректный номер телефона"));
+            if (phone) {
+                if (phone && !/^\+?\d{7,15}$/.test(phone)) {
+                    return next(ApiError.badRequest("Некорректный номер телефона"));
+                }
+                await user.update({phone: phone});
             }
 
             if (unp) {
+                if (!/^\d{9}$/.test(unp)) {
+                    return next(ApiError.badRequest("UNP должен состоять из 9 цифр"));
+                }
                 if (user.clientType === ClientType.LEGAL) {
                     return next(ApiError.badRequest("UNP уже задан для юридического лица"));
                 }
                 await user.update({unp: unp, clientType: ClientType.LEGAL});
-            }
-
-            if (phone) {
-                await user.update({phone: phone});
             }
 
             return res.json({ message: "Профиль успешно обновлён", user });

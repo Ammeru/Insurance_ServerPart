@@ -2,11 +2,17 @@ import { Model, DataTypes, Sequelize } from '@sequelize/core';
 
 enum InsuranceType {
     CARGO = "cargo", // Страхование груза
-    LIABILITY = "liability", // Страхование ответственности перевозчика
-    COMPLEX = "complex", // Комплексное страхование
+    CARRIER = "carrier", // Страхование ответственности перевозчика
+    FORWARDER = "forwarder", // Страхование ответственности экспедитора
 }
 
-enum Status {
+enum InsuranceTariff {
+    FULL = "full",
+    MID = "mid",
+    LOW = "low",
+}
+
+enum InsuranceStatus {
     PENDING = "pending", // Рассмотрение
     CONFIRMED = "confirmed", // Подтверждён
     DECLINED = "declined", // Отклонено
@@ -15,19 +21,14 @@ enum Status {
     EXPIRED = "expired", // Срок действия истёк
 }
 
-enum Risk {
-    LOW = "low", // Низкий
-    MEDIUM = "medium", // Средний
-    HIGH = "high", // Высокий
-}
-
 interface InsuranceAttributes {
     id: number;
     userId: number;
     insuranceType: InsuranceType;
+    insuranceTariff: InsuranceTariff;
     startDate: Date;
     endDate: Date;
-    status: Status;
+    insuranceStatus: InsuranceStatus;
     amount: number;
 }
 
@@ -37,9 +38,10 @@ class InsurancePolicies extends Model<InsuranceAttributes, InsuranceCreationAttr
     public id!: number;
     public userId!: number;
     public insuranceType!: InsuranceType;
+    public insuranceTariff!: InsuranceTariff;
     public startDate!: Date;
     public endDate!: Date;
-    public status!: Status;
+    public insuranceStatus!: InsuranceStatus;
     public amount!: number;
 }
 
@@ -58,6 +60,10 @@ const initInsuranceModel = (sequelize: Sequelize) => {
             type: DataTypes.ENUM(...Object.values(InsuranceType)),
             allowNull: false,
         },
+        insuranceTariff: {
+            type: DataTypes.ENUM(...Object.values(InsuranceTariff)),
+            allowNull: false,
+        },
         startDate: {
             type: DataTypes.DATE,
             allowNull: false,
@@ -66,10 +72,10 @@ const initInsuranceModel = (sequelize: Sequelize) => {
             type: DataTypes.DATE,
             allowNull: false,
         },
-        status: {
-            type: DataTypes.ENUM(...Object.values(Status)),
+        insuranceStatus: {
+            type: DataTypes.ENUM(...Object.values(InsuranceStatus)),
             allowNull: false,
-            defaultValue: Status.PENDING,
+            defaultValue: InsuranceStatus.PENDING,
         },
         amount: {
             type: DataTypes.FLOAT,
@@ -84,4 +90,4 @@ const initInsuranceModel = (sequelize: Sequelize) => {
     });
 };
 
-export { InsurancePolicies, InsuranceType, Status, Risk, initInsuranceModel }
+export { InsurancePolicies, InsuranceType, InsuranceTariff, InsuranceStatus, initInsuranceModel }

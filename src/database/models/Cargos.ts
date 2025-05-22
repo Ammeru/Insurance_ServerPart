@@ -1,5 +1,4 @@
 import { Model, DataTypes, Sequelize } from '@sequelize/core';
-import {Risk} from "./InsurancePolicies";
 
 enum CargoType {
     GENERAL = "general", // Общий груз
@@ -9,6 +8,7 @@ enum CargoType {
     LIQUID = "liquid", // Жидкость
     VALUABLE = "valuable", // Ценный
 }
+
 
 interface CargoAttributes {
     id: number;
@@ -20,9 +20,6 @@ interface CargoAttributes {
     fromCity: string;
     toCity: string;
     deliveryDate: Date;
-
-    riskLevel: string;
-    riskReason: string;
 }
 
 type CargoCreationAttributes = Omit<CargoAttributes, 'id'>;
@@ -37,9 +34,6 @@ class Cargos extends Model<CargoAttributes, CargoCreationAttributes> implements 
     public fromCity!: string;
     public toCity!: string;
     public deliveryDate!: Date;
-
-    public riskLevel!: Risk;
-    public riskReason!: string;
 }
 
 const initCargoModel = (sequelize: Sequelize) => {
@@ -76,15 +70,6 @@ const initCargoModel = (sequelize: Sequelize) => {
         },
         deliveryDate: {
             type: DataTypes.DATE,
-            allowNull: false,
-        },
-        riskLevel: {
-            type: DataTypes.ENUM(...Object.values(Risk)),
-            allowNull: false,
-            defaultValue: Risk.LOW,
-        },
-        riskReason: {
-            type: DataTypes.STRING,
             allowNull: false,
         },
     }, {
