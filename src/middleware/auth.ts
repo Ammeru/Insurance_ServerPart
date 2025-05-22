@@ -6,6 +6,7 @@ interface JwtPayload {
     id: number;
     email: string;
     role: string;
+    clientType: string;
     issuedAt?: number;
     expiresAt?: number;
 } // Данные токена
