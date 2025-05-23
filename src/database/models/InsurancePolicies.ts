@@ -2,8 +2,8 @@ import { Model, DataTypes, Sequelize } from '@sequelize/core';
 
 enum InsuranceType {
     CARGO = "cargo", // Страхование груза
-    CARRIER = "carrier", // Страхование ответственности перевозчика
-    FORWARDER = "forwarder", // Страхование ответственности экспедитора
+    RESPONSIBILITY = "responsibility", // Страхование ответственности
+    MULTIPLE = "multiple", // Страхование на несколько перевозок (годовые)
 }
 
 enum InsuranceTariff {

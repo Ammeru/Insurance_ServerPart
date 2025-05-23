@@ -25,7 +25,7 @@ class apiError extends Error {
         return new apiError(404, message);
     }
 
-    static iternal(message: string) {
+    static internal(message: string) {
         return new apiError(500, message);
     }
 }

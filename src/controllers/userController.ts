@@ -26,10 +26,10 @@ class UserController {
 
             await sendMail(email, "Код для подтверждения регистрации", `Ваш код ${code}`); //Отправляем код
 
-            return res.json({message: "Код отправлен на почту!"});
+            res.json({message: "Код отправлен на почту!"});
         } catch (error) {
             console.error("Ошибка отправки кода:", error);
-            return next(ApiError.iternal("Ошибка отправки кода"));
+            return next(ApiError.internal("Ошибка отправки кода"));
         }
     }
 
@@ -64,10 +64,10 @@ class UserController {
                role: UserRole.USER
             });
             const token = generateJwt(user.id, user.email, user.role, user.clientType);
-            return res.json({ token });
+            res.json({ token });
         } catch (error) {
             console.error("Ошибка выполнения:", error);
-            return next(ApiError.iternal("Непредвиденная ошибка"));
+            return next(ApiError.internal("Непредвиденная ошибка"));
 
         }
     }
@@ -90,11 +90,11 @@ class UserController {
                 return next(ApiError.badRequest("Ошибка почты или пароля"));
             }
             const token = generateJwt(exist.id, exist.email, exist.role, exist.clientType);
-            return res.json({ token });
+            res.json({ token });
 
         } catch (error) {
             console.error("Ошибка выполнения:", error);
-            return next(ApiError.iternal("Непредвиденная ошибка"));
+            return next(ApiError.internal("Непредвиденная ошибка"));
         }
     }
 
@@ -102,11 +102,11 @@ class UserController {
         try {
             const user: JwtPayload = req.user;
             const token = generateJwt(user.id, user.email, user.role as UserRole, user.clientType as ClientType);
-            return res.json({ token });
+            res.json({ token });
 
         } catch (error) {
             console.error("Ошибка выполнения:", error);
-            return next(ApiError.iternal("Непредвиденная ошибка"));
+            return next(ApiError.internal("Непредвиденная ошибка"));
         }
     }
 
@@ -118,10 +118,10 @@ class UserController {
             if (!user) {
                 return next(ApiError.notFound("Пользователь не найден"));
             }
-            return res.json(user);
+            res.json(user);
         } catch (error) {
             console.error("Ошибка получения профиля:", error);
-            return next(ApiError.iternal("Ошибка получения профиля"));
+            return next(ApiError.internal("Ошибка получения профиля"));
         }
     }
 
@@ -152,10 +152,10 @@ class UserController {
                 await user.update({unp: unp, clientType: ClientType.LEGAL});
             }
 
-            return res.json({ message: "Профиль успешно обновлён", user });
+            res.json({ message: "Профиль успешно обновлён", user });
         } catch (error) {
             console.error("Ошибка обновления профиля:", error);
-            return next(ApiError.iternal("Ошибка обновления профиля"));
+            return next(ApiError.internal("Ошибка обновления профиля"));
         }
     }
 
@@ -170,10 +170,10 @@ class UserController {
 
             await sendMail(email, "Код для обновления данных", `Ваш код ${code}`); //Отправляем код
 
-            return res.json({message: "Код отправлен на почту!"});
+            res.json({message: "Код отправлен на почту!"});
         } catch (error) {
             console.error("Ошибка отправки кода:", error);
-            return next(ApiError.iternal("Ошибка отправки кода"));
+            return next(ApiError.internal("Ошибка отправки кода"));
         }
     }
 
@@ -204,10 +204,10 @@ class UserController {
 
             await user.update({ email: newEmail });
             const token = generateJwt(user.id, user.email, user.role as UserRole, user.clientType as ClientType);
-            return res.json({ token });
+            res.json({ token });
         } catch (error) {
             console.error("Ошибка обновления email:", error);
-            return next(ApiError.iternal("Ошибка обновления email"));
+            return next(ApiError.internal("Ошибка обновления email"));
         }
     }
 
@@ -232,10 +232,10 @@ class UserController {
             const hash = await bcrypt.hash(newPassword, 10);
             await user.update({ password: hash });
 
-            return res.json({ message: "Пароль обновлён" });
+            res.json({ message: "Пароль обновлён" });
         } catch (error) {
             console.error("Ошибка обновления пароля:", error);
-            return next(ApiError.iternal("Ошибка смены пароля"));
+            return next(ApiError.internal("Ошибка смены пароля"));
         }
     }
 
@@ -250,11 +250,11 @@ class UserController {
             if (clientType) where.clientType = clientType;
 
             const users = await Users.findAll({ where });
-            return res.json(users);
+            res.json(users);
 
         } catch (error) {
             console.error("Ошибка выполнения:", error);
-            return next(ApiError.iternal("Ошибка получения пользователей"));
+            return next(ApiError.internal("Ошибка получения пользователей"));
         }
     }
 
@@ -266,11 +266,11 @@ class UserController {
             if (!user) {
                 return next(ApiError.notFound("Пользователь не найден"))
             }
-            return res.json(user);
+            res.json(user);
 
         } catch (error) {
             console.error("Ошибка выполнения:", error);
-            return next(ApiError.iternal("Ошибка получения пользователя"));
+            return next(ApiError.internal("Ошибка получения пользователя"));
         }
     }
 
@@ -298,10 +298,10 @@ class UserController {
             }
 
             await user.save();
-            return res.json(user);
+            res.json(user);
         } catch (error) {
             console.error("Ошибка выполнения:", error);
-            return next(ApiError.iternal("Ошибка обновления пользователя"));
+            return next(ApiError.internal("Ошибка обновления пользователя"));
         }
     }
 
@@ -315,10 +315,10 @@ class UserController {
             }
 
             await user.destroy();
-            return res.json({message: "Пользователь удалён"});
+            res.json({message: "Пользователь удалён"});
         } catch (error) {
             console.error("Ошибка выполнения:", error);
-            return next(ApiError.iternal("Непредвиденная ошибка"));
+            return next(ApiError.internal("Непредвиденная ошибка"));
         }
     }
 }

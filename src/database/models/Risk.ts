@@ -11,6 +11,7 @@ interface RiskAttributes {
 
     riskLevel: RiskLevel;
     riskReason: string;
+    riskScore: number;
 }
 
 type RiskCreationAttributes = Omit<RiskAttributes, 'id'>;
@@ -20,6 +21,7 @@ class Risk extends Model<RiskAttributes, RiskCreationAttributes> {
 
     public riskLevel!: Risk;
     public riskReason!: string;
+    public riskScore!: number;
 }
 
 const initRiskModel = (sequelize: Sequelize) => {
@@ -36,6 +38,10 @@ const initRiskModel = (sequelize: Sequelize) => {
         },
         riskReason: {
             type: DataTypes.STRING,
+            allowNull: false,
+        },
+        riskScore: {
+            type: DataTypes.FLOAT,
             allowNull: false,
         },
     }, {

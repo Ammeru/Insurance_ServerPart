@@ -21,6 +21,8 @@ app.use('/api', router);
 
 app.use(errorHandler);
 
+import './cron/updateExpiredPolicies';
+
 const start = async ():Promise<void> => {
     try {
         await connectDB();

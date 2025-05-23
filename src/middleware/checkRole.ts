@@ -7,14 +7,14 @@ function checkRole(requiredRole: string) {
         const user = req.user as JwtPayload;
 
         if (user.role === 'admin') {
-            next()
+            return next();
         }
 
         if (!user || user.role !== requiredRole) {
             return next(ApiError.forbidden("Недостаточно прав"));
         }
 
-        next();
+        return next();
     };
 }
 

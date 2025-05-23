@@ -3,7 +3,6 @@ import { Model, DataTypes, Sequelize} from "@sequelize/core";
 enum PaymentStatus {
     PENDING = 'pending',
     PAID = 'paid',
-    REFUNDED = 'refunded',
 }
 
 interface PaymentAttributes {
